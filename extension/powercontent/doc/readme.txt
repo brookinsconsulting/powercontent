@@ -52,7 +52,7 @@ Example code for the "File" content class:
     <label>Publish immediately:</label> <input type="checkbox" name="DoPublish" checked="checked" />
     <input type="hidden" name="UseNodeAssigments" value="0" />
     <input type="hidden" name="ClassID" value="12" />
-    <input type="hidden" name="RedirectURIAfterPublish" value={$node.url_alias|ezurl} />
+    <input type="hidden" name="RedirectURIAfterPublish" value="/{$node.url_alias}" />
     </div>
     
     <div>

@@ -126,6 +126,8 @@ if ( $http->hasPostVariable( 'CreateButton' ) && $http->hasPostVariable( 'NodeID
                                    $http->setPostVariable( $newPostVariable, $postValue );
                                    break;
                                }
+
+                               $possibleAttributeIdentifier = $possibleAttributeIdentifier . '_';
                             }
                        }
                 }

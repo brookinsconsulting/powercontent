@@ -44,7 +44,7 @@ ContentObjectAttribute_[some attribute specific name]_[contentobjectattribute id
 For instance the name for the fields of an articles are (do a view source of the page when you're editing an article):
 - title: ContentObjectAttribute_ezstring_data_text_1105
 - into: ContentObjectAttribute_data_text_1108
-(1105 and 1108 are contentclassattribute identifier numbers that are going to be different on your installation.)
+(1105 and 1108 are contentobjectattribute identifier numbers that are going to be different on your installation.)
 
 You will have to to change these names to:
 

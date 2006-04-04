@@ -54,7 +54,7 @@ For the article, it would be:
 -title: powercontent_title_ContentObjectAttribute_ezstring_data_text_pcattributeid
 -intro: powercontent_intro_ContentObjectAttribute_data_text_pcattributeid
  
-When the Power Content module processes this kind of post variables, it will inject fake post variables where the string "pcattributeid" will be replaced by the contentobjectattribute id corresponding to the contentclassattribute identifier specified in the post variable name.
+When the Power Content module processes this kind of post variables, it will take their content and put them into the proper fields as if the user would have inputed it (it will inject fake post variables where the string "pcattributeid" will be replaced by the expected contentobjectattribute id).
 
 On the top of the parameters you want to "prefill", you have to provide a few additionnal ones:
 - NodeID: The nodeid of the parent object you want to create
@@ -70,7 +70,7 @@ You have more optional parameters, see the examples
 <form method="post" action={"powercontent/action/"|ezurl}>
   <div class="buttonright">
   <input type="hidden" name="NodeID" value="{$owner.contentobject.main_node_id}" />
-  <input type="hidden" name="ClassID" value="2" />
+  <input type="hidden" name="ClassIdentifier" value="article" />
   <input type="hidden" name="powercontent_title_ContentObjectAttribute_ezstring_data_text_pcattributeid" value="A new article on my blog" />
   <input type="hidden" name="powercontent_intro_ContentObjectAttribute_data_text_pcattributeid" value="A new intro on my blog" />
    <input class="classbutton" type="submit" name="CreateButton" value="New article" />

@@ -104,13 +104,13 @@ if ( $http->hasPostVariable( 'CreateButton' ) && $http->hasPostVariable( 'NodeID
                            }
                            
                            $possibleAttributeIdentifier = '';
-                           
                            while ( true )
                            {
                                $part = array_shift( $nameParts );
                                
                                if ( is_null( $part ) )
                                {
+                                   eZDebug::writeWarning( 'not found matching attribute: ' . $possibleAttributeIdentifier, 'defaultvalues/action.php' );
                                    break;
                                }
                                

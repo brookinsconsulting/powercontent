@@ -172,6 +172,8 @@ if ( $http->hasPostVariable( 'CreateButton' ) && $http->hasPostVariable( 'NodeID
                                    $_FILES[$newFileVariable] = $fileValue;
                                    break;
                                }
+                               
+                               $possibleAttributeIdentifier = $possibleAttributeIdentifier . '_';
                             }
                        }
                 }

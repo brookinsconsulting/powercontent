@@ -58,6 +58,7 @@ When the Power Content module processes this kind of post variables, it will tak
 
 On the top of the parameters you want to "prefill", you have to provide a few additionnal ones:
 - NodeID: The nodeid of the parent object you want to create
+(as an option, you can put "UserNode", that will put create it under the usernode of the currently logged in user)
 - ClassIdentifier: The class identifier of the object you want to create
 (you can provide either the class identifier or the class id, no need for both) 
 - CreateButton: a submit button

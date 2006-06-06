@@ -5,12 +5,25 @@ $http =& eZHTTPTool::instance();
 
 $module =& $Params['Module'];
 
+// you need the NodeID (parent node) 
+if (!$http->hasPostVariable( 'NodeID')) {
+   eZDebug::writeError( 'Missing mandatory parameter NodeID (the parent nodeid) so I know where to create it', 'powercontent/action.php' );
+}
+else
+  $nodeID = $http->postVariable( 'NodeID');
+if ($nodeID === "UserNode") {
+  // special mode: the content is put under the user's node
+  $user =& eZUser::currentUser();
+  $owner =& eZContentObject::fetch( $user->attribute( 'contentobject_id' ) );
+  $nodeID = $owner->attribute( 'main_node_id' );
+}
+
 // The button was called NewButton first, but because 
 // there was a module action triggered in content/relation_edit.php because of that button name
 // I've renamed it to 'CreateButton'
-if ( $http->hasPostVariable( 'CreateButton' ) && $http->hasPostVariable( 'NodeID' )  )
+if ( $http->hasPostVariable( 'CreateButton' ) )
 {
-    $node =& eZContentObjectTreeNode::fetch( $http->postVariable( 'NodeID' ) );
+    $node =& eZContentObjectTreeNode::fetch( $nodeID );
     
     if ( is_object( $node ) )
     {
@@ -180,6 +193,7 @@ if ( $http->hasPostVariable( 'CreateButton' ) && $http->hasPostVariable( 'NodeID
                 
                 if ( count( $usedAttributes ) > 0 )
                 {
+                    $http->setPostVariable( 'DontNotify', 'InputStored' );
                     if ( $http->hasPostVariable( 'DoPublish' ) )
                     {
                         $http->setPostVariable( 'PublishButton', 'Publish' );
@@ -212,9 +226,16 @@ if ( $http->hasPostVariable( 'CreateButton' ) && $http->hasPostVariable( 'NodeID
     }
     else
     {
+        eZDebug::writeError( "Invalid nodeid :$nodeid", 'powercontent/action.php' );
         return $module->handleError( EZ_ERROR_KERNEL_NOT_AVAILABLE, 'kernel' );
     }
 }
-    
+else
+{
+  //I don't get the use of powercontent without CreateButton
+  if ( !$http->hasPostVariable( 'CreateButton' ) )
+    eZDebug::writeError( 'Missing CreateButton post parameter', 'powercontent/action.php' );
+}
+
 return $module->handleError( EZ_ERROR_KERNEL_ACCESS_DENIED, 'kernel' );
 ?>

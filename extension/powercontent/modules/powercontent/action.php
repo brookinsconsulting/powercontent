@@ -209,7 +209,7 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                 if ( $http->hasPostVariable( 'RedirectToMainNodeAfterPublish' ) )
                 {
                     $accessResult = $user->hasAccessTo( 'redirect', 'mainnode' );
-                    if ( $result['accessWord'] != 'no' )
+                    if ( $accessResult['accessWord'] != 'no' )
                     {
                         $http->setSessionVariable( 'RedirectURIAfterPublish', '/redirect/mainnode/' . $ObjectID );
                     }

@@ -62,7 +62,12 @@ On the top of the parameters you want to "prefill", you have to provide a few ad
 - ClassIdentifier: The class identifier of the object you want to create
 (you can provide either the class identifier or the class id, no need for both)
 - CreateButton: a submit button
-You have more optional parameters, see the examples
+You have more optional parameters, see the examples for details
+- RedirectToMainNodeAfterPublish : if set, it will redirect to the full view of the newly created node
+- RedirectURIAfterPublish : the url to display after the publication of the node.
+
+
+
 
  Examples code
 ****************************

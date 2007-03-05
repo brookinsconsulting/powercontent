@@ -5,7 +5,7 @@ $http =& eZHTTPTool::instance();
 
 $module =& $Params['Module'];
 
-// you need the NodeID (parent node) 
+// you need the NodeID (parent node)
 if (!$http->hasPostVariable( 'NodeID')) {
    eZDebug::writeError( 'Missing mandatory parameter NodeID (the parent nodeid) so I know where to create it', 'powercontent/action.php' );
 }
@@ -18,19 +18,19 @@ if ($nodeID === "UserNode") {
   $nodeID = $owner->attribute( 'main_node_id' );
 }
 
-// The button was called NewButton first, but because 
+// The button was called NewButton first, but because
 // there was a module action triggered in content/relation_edit.php because of that button name
 // I've renamed it to 'CreateButton'
 if ( $http->hasPostVariable( 'CreateButton' ) )
 {
     $node =& eZContentObjectTreeNode::fetch( $nodeID );
-    
+
     if ( is_object( $node ) )
     {
         $contentClassID = false;
         $contentClassIdentifier = false;
         $class = false;
-        
+
         if ( $http->hasPostVariable( 'ClassID' ) )
         {
             $contentClassID = $http->postVariable( 'ClassID' );
@@ -41,7 +41,7 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
             $contentClassIdentifier = $http->postVariable( 'ClassIdentifier' );
             $class =& eZContentClass::fetchByIdentifier( $contentClassIdentifier );
         }
-        
+
         if ( is_object( $class ) )
         {
             $contentClassID = $class->attribute( 'id' );
@@ -55,24 +55,24 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
 
                 $db =& eZDB::instance();
                 $db->begin();
-                
+
                 $object =& $class->instantiate( $userID, $sectionID );
                 $ObjectID = $object->attribute( 'id' );
-                
+
                 $version =& $object->currentVersion();
                 $EditVersion = $version->attribute( 'version' );
-                
+
                 $EditLanguage = false;
 
                 $time = mktime();
-                
+
                 $version->setAttribute( 'created', $time );
                 $version->setAttribute( 'modified', $time );
 
                 $object->setAttribute( 'modified', $time );
-                
+
                 $dataMap =& $version->dataMap();
-                
+
                 $nodeAssignment =& eZNodeAssignment::create( array(
                                                                      'contentobject_id' => $object->attribute( 'id' ),
                                                                      'contentobject_version' => $object->attribute( 'current_version' ),
@@ -80,55 +80,55 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                                                                      'is_main' => 1
                                                                    )
                                                             );
-                                            
+
                 if ( $http->hasPostVariable( 'AssignmentRemoteID' ) )
                 {
                     $nodeAssignment->setAttribute( 'remote_id', $http->postVariable( 'AssignmentRemoteID' ) );
                 }
-                
+
                 $nodeAssignment->store();
-                
+
                 /*
                     handle attribute values
-                    
+
                     conversion scheme:
-                    
+
                     powercontent_[attributeidentifier]_[normalpostvariablename]
                     where the attribute id in normalpostvariablename has been replaced with 'pcattributeid'
                 */
-                
+
                 $postVariables = $_POST;
-                
+
                 $usedAttributes = array();
-                
+
                 foreach ( $postVariables as $postName => $postValue )
                 {
                        $newPostVariable = false;
                        $nameParts = explode( '_', $postName );
-                       
+
                        if ( count( $nameParts ) > 2 )
                        {
                            $firstNamePart = array_shift( $nameParts );
                            eZDebug::writeNotice( $firstNamePart );
-                           
+
                            if ( $firstNamePart != 'powercontent' )
                            {
                                continue;
                            }
-                           
+
                            $possibleAttributeIdentifier = '';
                            while ( true )
                            {
                                $part = array_shift( $nameParts );
-                               
+
                                if ( is_null( $part ) )
                                {
                                    eZDebug::writeWarning( 'not found matching attribute: ' . $possibleAttributeIdentifier, 'defaultvalues/action.php' );
                                    break;
                                }
-                               
+
                                $possibleAttributeIdentifier = $possibleAttributeIdentifier . $part;
-                           
+
                                if ( array_key_exists( $possibleAttributeIdentifier, $dataMap ) )
                                {
                                    eZDebug::writeNotice( 'found matching attribute: ' . $possibleAttributeIdentifier, 'defaultvalues/action.php' );
@@ -144,37 +144,37 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                             }
                        }
                 }
-                
+
                 $fileVariables = &$_FILES;
-                
+
                 foreach ( $fileVariables as $fileName => $fileValue )
                 {
                        $newFileVariable = false;
                        $nameParts = explode( '_', $fileName );
-                       
+
                        if ( count( $nameParts ) > 2 )
                        {
                            $firstNamePart = array_shift( $nameParts );
                            eZDebug::writeNotice( $firstNamePart );
-                           
+
                            if ( $firstNamePart != 'powercontent' )
                            {
                                continue;
                            }
-                           
+
                            $possibleAttributeIdentifier = '';
-                           
+
                            while ( true )
                            {
                                $part = array_shift( $nameParts );
-                               
+
                                if ( is_null( $part ) )
                                {
                                    break;
                                }
-                               
+
                                $possibleAttributeIdentifier = $possibleAttributeIdentifier . $part;
-                           
+
                                if ( array_key_exists( $possibleAttributeIdentifier, $dataMap ) )
                                {
                                    eZDebug::writeNotice( 'found matching file attribute: ' . $possibleAttributeIdentifier, 'defaultvalues/action.php' );
@@ -185,27 +185,36 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                                    $_FILES[$newFileVariable] = $fileValue;
                                    break;
                                }
-                               
+
                                $possibleAttributeIdentifier = $possibleAttributeIdentifier . '_';
                             }
                        }
                 }
-                
+
                 if ( count( $usedAttributes ) > 0 )
                 {
                     $http->setPostVariable( 'DontNotify', 'InputStored' );
                     if ( $http->hasPostVariable( 'DoPublish' ) )
                     {
                         $http->setPostVariable( 'PublishButton', 'Publish' );
-                    } 
+                    }
                     else
                     {
                         $http->setPostVariable( 'StoreButton', 'Store' );
                     }
                 }
-                
+
                 $db->commit();
-                
+
+                if ( $http->hasPostVariable( 'RedirectToMainNodeAfterPublish' ) )
+                {
+                    $accessResult = $user->hasAccessTo( 'redirect', 'mainnode' );
+                    if ( $result['accessWord'] != 'no' )
+                    {
+                        $http->setSessionVariable( 'RedirectURIAfterPublish', '/redirect/mainnode/' . $ObjectID );
+                    }
+                }
+
                 // let edit module run in the same HTTP request (no redirect!!)
                 // I don't think this has any consequences for custom actions
                 // which will use the content browser etc.

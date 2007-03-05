@@ -1,6 +1,6 @@
 Power Content extension
 
-Copyright (C) 2006 SCK-CEN
+Copyright (C) 2006-2007 SCK-CEN
 Written by Kristof Coomans ( kristof[dot]coomans[at]telenet[dot]be )
 
 This program is free software; you can redistribute it and/or
@@ -53,16 +53,16 @@ powercontent_[contentclassattribute identifier]_ContentObjectAttribute_[some att
 For the article, it would be:
 -title: powercontent_title_ContentObjectAttribute_ezstring_data_text_pcattributeid
 -intro: powercontent_intro_ContentObjectAttribute_data_text_pcattributeid
- 
+
 When the Power Content module processes this kind of post variables, it will take their content and put them into the proper fields as if the user would have inputed it (it will inject fake post variables where the string "pcattributeid" will be replaced by the expected contentobjectattribute id).
 
 On the top of the parameters you want to "prefill", you have to provide a few additionnal ones:
 - NodeID: The nodeid of the parent object you want to create
 (as an option, you can put "UserNode", that will put create it under the usernode of the currently logged in user)
 - ClassIdentifier: The class identifier of the object you want to create
-(you can provide either the class identifier or the class id, no need for both) 
+(you can provide either the class identifier or the class id, no need for both)
 - CreateButton: a submit button
-You have more optional parameters, see the examples 
+You have more optional parameters, see the examples
 
  Examples code
 ****************************
@@ -88,7 +88,7 @@ You have more optional parameters, see the examples
     <input type="hidden" name="ClassID" value="12" />
     <input type="hidden" name="RedirectURIAfterPublish" value="/{$node.url_alias}" />
     </div>
-    
+
     <div>
     <label>File:</label>
     <input class="box" name="powercontent_file_ContentObjectAttribute_data_binaryfilename_pcattributeid" type="file" />

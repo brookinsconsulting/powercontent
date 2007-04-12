@@ -2,7 +2,8 @@
 
 $eZTemplateFunctionArray = array();
 $eZTemplateFunctionArray[] = array( 'function' => 'eZPowercontentForwardInit',
-                                    'function_names' => array( 'powercontent_attribute_create_gui' ) );
+                                    'function_names' => array( 'powercontent_create_gui',
+                                                               'powercontent_attribute_create_gui' ) );
 
 if ( !function_exists( 'eZPowercontentForwardInit' ) )
 {
@@ -25,10 +26,18 @@ if ( !function_exists( 'eZPowercontentForwardInit' ) )
 
         include_once( 'kernel/common/ezobjectforwarder.php' );
         $forward_rules = array(
+            'powercontent_create_gui' => array( 'template_root' => 'powercontent',
+                                           'input_name' => 'content_class',
+                                           'output_name' => 'class',
+                                           'namespace' => 'powercontent',
+                                           'attribute_keys' => array( 'class_identifier' => array( 'identifier' ),
+                                                                      'class' => array( 'id' ) ),
+                                           'attribute_access' => array(),
+                                           'use_views' => 'view' ),
             'powercontent_attribute_create_gui' => array( 'template_root' => 'powercontent/datatype',
                                            'input_name' => 'class_attribute',
                                            'output_name' => 'class_attribute',
-                                           'namespace' => 'powercontent',
+                                           'namespace' => 'powercontent_attribute',
                                            'attribute_keys' => array( 'attribute_identifier' => array( 'identifier' ),
                                                                       'class' => array( 'contentclass_id' ) ),
                                            // todo: add class_identifier key, a patch for eZContentClassAttribute is needed

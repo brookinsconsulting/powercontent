@@ -1,7 +1,11 @@
 {default $node=fetch('content','node',hash('node_id',ezini('NodeSettings','RootNode','content.ini')))
-         $redirectToMainNode=false()}
+         $useForm=true()
+         $redirectToMainNode=false()
+         $redirectURIAfterPublish=false()}
 
+{if $useForm}
 <form method="post" action={"/powercontent/action"|ezurl} enctype="multipart/form-data">
+{/if}
 
 <input type="hidden" name="NodeID" value="{$node.node_id}" />
 <input type="hidden" name="UseNodeAssigments" value="0" />
@@ -9,7 +13,11 @@
 {if $redirectToMainNode}
 <input type="hidden" name="RedirectToMainNodeAfterPublish" />
 {else}
-<input type="hidden" name="RedirectURIAfterPublish" value="/{$node.url_alias}" />
+    {if $redirectURIAfterPublish|is_string}
+    <input type="hidden" name="RedirectURIAfterPublish" value="{$redirectURIAfterPublish}" />
+    {else}
+    <input type="hidden" name="RedirectURIAfterPublish" value="/{$node.url_alias}" />
+    {/if}
 {/if}
 
 <input type="hidden" name="DoPublish" value="1" />
@@ -25,6 +33,8 @@
     <input class="button" type="submit" name="CreateButton" value="Create" />
 </div>
 
+{if $useForm}
 </form>
+{/if}
 
 {/default}

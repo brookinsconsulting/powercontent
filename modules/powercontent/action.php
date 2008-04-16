@@ -1,9 +1,8 @@
 <?php
 
-include_once( 'lib/ezutils/classes/ezhttptool.php' );
-$http =& eZHTTPTool::instance();
+$http = eZHTTPTool::instance();
 
-$module =& $Params['Module'];
+$module = $Params['Module'];
 
 // you need the NodeID (parent node)
 if (!$http->hasPostVariable( 'NodeID')) {
@@ -13,8 +12,8 @@ else
   $nodeID = $http->postVariable( 'NodeID');
 if ($nodeID === "UserNode") {
   // special mode: the content is put under the user's node
-  $user =& eZUser::currentUser();
-  $owner =& eZContentObject::fetch( $user->attribute( 'contentobject_id' ) );
+  $user = eZUser::currentUser();
+  $owner = eZContentObject::fetch( $user->attribute( 'contentobject_id' ) );
   $nodeID = $owner->attribute( 'main_node_id' );
 }
 
@@ -23,7 +22,7 @@ if ($nodeID === "UserNode") {
 // I've renamed it to 'CreateButton'
 if ( $http->hasPostVariable( 'CreateButton' ) )
 {
-    $node =& eZContentObjectTreeNode::fetch( $nodeID );
+    $node = eZContentObjectTreeNode::fetch( $nodeID );
 
     if ( is_object( $node ) )
     {
@@ -34,52 +33,52 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
         if ( $http->hasPostVariable( 'ClassID' ) )
         {
             $contentClassID = $http->postVariable( 'ClassID' );
-            $class =& eZContentClass::fetch( $contentClassID );
+            $class = eZContentClass::fetch( $contentClassID );
         }
         else if ( $http->hasPostVariable( 'ClassIdentifier' ) )
         {
             $contentClassIdentifier = $http->postVariable( 'ClassIdentifier' );
-            $class =& eZContentClass::fetchByIdentifier( $contentClassIdentifier );
+            $class = eZContentClass::fetchByIdentifier( $contentClassIdentifier );
         }
 
         if ( is_object( $class ) )
         {
             $contentClassID = $class->attribute( 'id' );
 
-            $parentContentObject =& $node->attribute( 'object' );
+            $parentContentObject = $node->attribute( 'object' );
             if ( $parentContentObject->checkAccess( 'create', $contentClassID,  $parentContentObject->attribute( 'contentclass_id' ) ) == '1' )
             {
-                $user =& eZUser::currentUser();
-                $userID =& $user->attribute( 'contentobject_id' );
+                $user = eZUser::currentUser();
+                $userID = $user->attribute( 'contentobject_id' );
                 $sectionID = $parentContentObject->attribute( 'section_id' );
 
-                $db =& eZDB::instance();
+                $db = eZDB::instance();
                 $db->begin();
 
-                $object =& $class->instantiate( $userID, $sectionID );
+                $object = $class->instantiate( $userID, $sectionID );
                 $ObjectID = $object->attribute( 'id' );
 
-                $version =& $object->currentVersion();
+                $version = $object->currentVersion();
                 $EditVersion = $version->attribute( 'version' );
 
                 $EditLanguage = false;
 
-                $time = mktime();
+                $time = time();
 
                 $version->setAttribute( 'created', $time );
                 $version->setAttribute( 'modified', $time );
 
                 $object->setAttribute( 'modified', $time );
 
-                $dataMap =& $version->dataMap();
+                $dataMap = $version->dataMap();
 
-                $nodeAssignment =& eZNodeAssignment::create( array(
-                                                                     'contentobject_id' => $object->attribute( 'id' ),
-                                                                     'contentobject_version' => $object->attribute( 'current_version' ),
-                                                                     'parent_node' => $node->attribute( 'node_id' ),
-                                                                     'is_main' => 1
-                                                                   )
-                                                            );
+                $nodeAssignment = eZNodeAssignment::create( array(
+                                                                    'contentobject_id' => $object->attribute( 'id' ),
+                                                                    'contentobject_version' => $object->attribute( 'current_version' ),
+                                                                    'parent_node' => $node->attribute( 'node_id' ),
+                                                                    'is_main' => 1
+                                                                 )
+                                                          );
 
                 if ( $http->hasPostVariable( 'AssignmentRemoteID' ) )
                 {
@@ -132,7 +131,7 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                                if ( array_key_exists( $possibleAttributeIdentifier, $dataMap ) )
                                {
                                    eZDebug::writeNotice( 'found matching attribute: ' . $possibleAttributeIdentifier, 'defaultvalues/action.php' );
-                                   $usedAttributes[] =& $dataMap[$possibleAttributeIdentifier];
+                                   $usedAttributes[] = $dataMap[$possibleAttributeIdentifier];
                                    $attribID = $dataMap[$possibleAttributeIdentifier]->attribute( 'id' );
                                    $newPostVariable = implode( '_', $nameParts );
                                    $newPostVariable = str_replace( 'pcattributeid', $attribID, $newPostVariable );
@@ -145,7 +144,7 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                        }
                 }
 
-                $fileVariables = &$_FILES;
+                $fileVariables = $_FILES;
 
                 foreach ( $fileVariables as $fileName => $fileValue )
                 {
@@ -178,7 +177,7 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                                if ( array_key_exists( $possibleAttributeIdentifier, $dataMap ) )
                                {
                                    eZDebug::writeNotice( 'found matching file attribute: ' . $possibleAttributeIdentifier, 'defaultvalues/action.php' );
-                                   $usedAttributes[] =& $dataMap[$possibleAttributeIdentifier];
+                                   $usedAttributes[] = $dataMap[$possibleAttributeIdentifier];
                                    $attribID = $dataMap[$possibleAttributeIdentifier]->attribute( 'id' );
                                    $newFileVariable = implode( '_', $nameParts );
                                    $newFileVariable = str_replace( 'pcattributeid', $attribID, $newFileVariable );
@@ -220,23 +219,23 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                 // which will use the content browser etc.
                 $Result = array();
                 $Result['rerun_uri'] = $module->redirectionURI( 'content', 'edit', array( $ObjectID, $EditVersion, $EditLanguage ) );
-                $module->setExitStatus( EZ_MODULE_STATUS_RERUN );
+                $module->setExitStatus( eZModule::STATUS_RERUN );
                 return;
             }
             else
             {
-                return $module->handleError( EZ_ERROR_KERNEL_ACCESS_DENIED, 'kernel' );
+                return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
             }
         }
         else
         {
-            return $module->handleError( EZ_ERROR_KERNEL_ACCESS_DENIED, 'kernel' );
+            return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
         }
     }
     else
     {
         eZDebug::writeError( "Invalid nodeid :$nodeid", 'powercontent/action.php' );
-        return $module->handleError( EZ_ERROR_KERNEL_NOT_AVAILABLE, 'kernel' );
+        return $module->handleError( eZError::KERNEL_NOT_AVAILABLE, 'kernel' );
     }
 }
 else
@@ -246,5 +245,5 @@ else
     eZDebug::writeError( 'Missing CreateButton post parameter', 'powercontent/action.php' );
 }
 
-return $module->handleError( EZ_ERROR_KERNEL_ACCESS_DENIED, 'kernel' );
+return $module->handleError( eZError::KERNEL_ACCESS_DENIED, 'kernel' );
 ?>

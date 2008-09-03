@@ -24,7 +24,6 @@ if ( !function_exists( 'eZPowercontentForwardInit' ) )
             - use_views: false if not used, a string to give the name of the template to use
         */
 
-        include_once( 'kernel/common/ezobjectforwarder.php' );
         $forward_rules = array(
             'powercontent_create_gui' => array( 'template_root' => 'powercontent',
                                            'input_name' => 'content_class',

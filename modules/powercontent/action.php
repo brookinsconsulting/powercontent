@@ -76,6 +76,8 @@ if ( $http->hasPostVariable( 'CreateButton' ) )
                                                                     'contentobject_id' => $object->attribute( 'id' ),
                                                                     'contentobject_version' => $object->attribute( 'current_version' ),
                                                                     'parent_node' => $node->attribute( 'node_id' ),
+                                                                    'sort_field' => $class->attribute( 'sort_field' ),
+                                                                    'sort_order' => $class->attribute( 'sort_order' ),
                                                                     'is_main' => 1
                                                                  )
                                                           );
